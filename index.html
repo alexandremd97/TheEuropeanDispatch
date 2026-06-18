@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The European Dispatch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:       #0F0F0F;
+      --paper:     #F7F4EF;
+      --accent-london:   #C8392B;
+      --accent-lisbon:   #2255A4;
+      --accent-brussels: #2E7D4F;
+      --muted:     #6B6760;
+      --rule:      #D8D4CC;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── MASTHEAD ── */
+    .masthead {
+      text-align: center;
+      padding: 48px 24px 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .masthead-rule {
+      width: 100%;
+      height: 1px;
+      background: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .masthead-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .masthead-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 8vw, 5rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+
+    .masthead-rule-bottom {
+      width: 100%;
+      height: 3px;
+      background: var(--ink);
+      margin-top: 10px;
+    }
+
+    .masthead-date {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 680px;
+      margin: 64px auto 0;
+      padding: 0 24px;
+      text-align: center;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .hero-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.7rem, 5vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+
+    .hero-headline em {
+      font-style: italic;
+      color: var(--accent-london);
+    }
+
+    .hero-body {
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 12px;
+    }
+
+    .hero-privacy {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--rule);
+      max-width: 420px;
+      margin: 0 auto 56px;
+      font-style: italic;
+      color: #AAA49E;
+    }
+
+    /* ── CITY CARDS ── */
+    .cities-label {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .cities {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    @media (max-width: 640px) {
+      .cities {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+      }
+    }
+
+    .city-card {
+      position: relative;
+      cursor: pointer;
+      border: 1.5px solid var(--ink);
+      background: var(--paper);
+      padding: 36px 24px 32px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .city-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      transition: height 0.2s ease;
+    }
+
+    .city-card.london::before  { background: var(--accent-london); }
+    .city-card.lisbon::before  { background: var(--accent-lisbon); }
+    .city-card.brussels::before { background: var(--accent-brussels); }
+
+    .city-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 6px 6px 0px var(--ink);
+    }
+
+    .city-card:hover::before { height: 6px; }
+
+    .city-number {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .city-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .city-country {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .city-desc {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+      border-top: 1px solid var(--rule);
+      padding-top: 16px;
+    }
+
+    .city-arrow {
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .city-card.london .city-arrow  { color: var(--accent-london); }
+    .city-card.lisbon .city-arrow  { color: var(--accent-lisbon); }
+    .city-card.brussels .city-arrow { color: var(--accent-brussels); }
+
+    /* ── ZOOM OVERLAY ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .overlay.london  { background: #FDF2F1; }
+    .overlay.lisbon  { background: #F0F4FC; }
+    .overlay.brussels { background: #F0F7F3; }
+
+    /* ── OVERLAY HEADER ── */
+    .overlay-header {
+      padding: 32px 24px 24px;
+      border-bottom: 3px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .overlay.london .overlay-header   { background: #FDF2F1; border-color: var(--accent-london); }
+    .overlay.lisbon .overlay-header   { background: #F0F4FC; border-color: var(--accent-lisbon); }
+    .overlay.brussels .overlay-header { background: #F0F7F3; border-color: var(--accent-brussels); }
+
+    .overlay-city-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 6vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .overlay-meta {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .back-btn {
+      background: none;
+      border: 1.5px solid var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+
+    .back-btn:hover { background: var(--ink); color: var(--paper); }
+
+    /* ── OVERLAY CONTENT ── */
+    .overlay-content {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+      width: 100%;
+      transform: translateY(24px);
+      transition: transform 0.4s ease 0.1s;
+    }
+
+    .overlay.active .overlay-content {
+      transform: translateY(0);
+    }
+
+    /* Section headers */
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 10px;
+      border-bottom: 1.5px solid var(--ink);
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .section-count {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .section-block {
+      margin-bottom: 56px;
+    }
+
+    /* ── NEWS CARDS ── */
+    .news-grid {
+      display: grid;
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+    }
+
+    .news-item {
+      background: var(--paper);
+      padding: 20px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      cursor: pointer;
+      transition: background 0.12s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .overlay.london .news-item:hover   { background: #FDE8E7; }
+    .overlay.lisbon .news-item:hover   { background: #E4EDFB; }
+    .overlay.brussels .news-item:hover { background: #E4F2EA; }
+
+    .news-index {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      min-width: 24px;
+      padding-top: 3px;
+    }
+
+    .news-body { flex: 1; }
+
+    .news-source {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .news-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .news-desc {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .news-time {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      padding-top: 3px;
+    }
+
+    /* ── EVENTS CARDS ── */
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .event-card {
+      border: 1.5px solid var(--ink);
+      padding: 20px;
+      background: var(--paper);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .event-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+
+    .event-date {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .overlay.london .event-date   { color: var(--accent-london); }
+    .overlay.lisbon .event-date   { color: var(--accent-lisbon); }
+    .overlay.brussels .event-date { color: var(--accent-brussels); }
+
+    .event-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .event-venue {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── PODCAST CARDS ── */
+    .podcast-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .podcast-card {
+      border: 1.5px solid var(--rule);
+      padding: 20px;
+      background: var(--paper);
+      transition: border-color 0.15s;
+    }
+
+    .overlay.london .podcast-card:hover   { border-color: var(--accent-london); }
+    .overlay.lisbon .podcast-card:hover   { border-color: var(--accent-lisbon); }
+    .overlay.brussels .podcast-card:hover { border-color: var(--accent-brussels); }
+
+    .podcast-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .podcast-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .podcast-desc {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    /* ── LOADING / ERROR ── */
+    .loading-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 24px 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid var(--rule);
+      border-top-color: var(--ink);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-msg {
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+      padding: 16px 0;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      border-top: 1px solid var(--rule);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── REDUCED MOTION ── */
+    @media (prefers-reduced-motion: reduce) {
+      .overlay, .overlay-content, .city-card { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LANDING PAGE -->
+  <div id="landing">
+    <header class="masthead">
+      <div class="masthead-rule"></div>
+      <p class="masthead-sub">Est. 2026 &nbsp;·&nbsp; London · Lisbon · Brussels</p>
+      <h1 class="masthead-title">The European Dispatch</h1>
+      <div class="masthead-rule-bottom"></div>
+      <p class="masthead-date" id="today-date"></p>
+    </header>
+
+    <section class="hero">
+      <p class="hero-eyebrow">Your morning brief</p>
+      <h2 class="hero-headline">Hi. You've come to the <em>best place</em> to start your morning.</h2>
+      <p class="hero-body">Tell us where you're based and we'll bring you the news, events, and sounds that actually matter — no noise, no algorithm, no nonsense.</p>
+      <p class="hero-privacy">You see this? We don't even read or analyse where you are. Absolute private stuff happening here — it's not at all because the website builder couldn't figure that part out.</p>
+    </section>
+
+    <p class="cities-label">Pick your city</p>
+    <div class="cities">
+      <div class="city-card london" onclick="openCity('london')">
+        <span class="city-number">01</span>
+        <div class="city-name">London</div>
+        <div class="city-country">United Kingdom</div>
+        <div class="city-desc">From the City to Shoreditch — politics, culture, and what's on tonight.</div>
+        <div class="city-arrow">Enter →</div>
+      </div>
+      <div class="city-card lisbon" onclick="openCity('lisbon')">
+        <span class="city-number">02</span>
+        <div class="city-name">Lisbon</div>
+        <div class="city-country">Portugal</div>
+        <div class="city-desc">Sun, politics, and a music scene that the rest of Europe is finally noticing.</div>
+        <div class="city-arrow">Enter →</div>
+      </div>
+      <div class="city-card brussels" onclick="openCity('brussels')">
+        <span class="city-number">03</span>
+        <div class="city-name">Brussels</div>
+        <div class="city-country">Belgium</div>
+        <div class="city-desc">Europe's capital of decisions, beer, and underrated art.</div>
+        <div class="city-arrow">Enter →</div>
+      </div>
+    </div>
+
+    <footer class="footer">The European Dispatch &nbsp;·&nbsp; No cookies. No tracking. No excuses.</footer>
+  </div>
+
+  <!-- CITY OVERLAY -->
+  <div class="overlay" id="city-overlay">
+    <div class="overlay-header">
+      <div>
+        <div class="overlay-city-name" id="overlay-city-name">London</div>
+        <div class="overlay-meta" id="overlay-city-meta">United Kingdom · Your morning brief</div>
+      </div>
+      <button class="back-btn" onclick="closeCity()">← All cities</button>
+    </div>
+
+    <div class="overlay-content">
+
+      <!-- NEWS -->
+      <div class="section-block">
+        <div class="section-header">
+          <span class="section-title">News</span>
+          <span class="section-count" id="news-count">Loading…</span>
+        </div>
+        <div id="news-container">
+          <div class="loading-row"><div class="spinner"></div> Fetching the headlines…</div>
+        </div>
+      </div>
+
+      <!-- EVENTS -->
+      <div class="section-block">
+        <div class="section-header">
+          <span class="section-title">Concerts & Events</span>
+          <span class="section-count" id="events-count">Loading…</span>
+        </div>
+        <div id="events-container">
+          <div class="loading-row"><div class="spinner"></div> Checking what's on…</div>
+        </div>
+      </div>
+
+      <!-- PODCASTS -->
+      <div class="section-block">
+        <div class="section-header">
+          <span class="section-title">Podcast Picks</span>
+          <span class="section-count">Curated</span>
+        </div>
+        <div id="podcasts-container"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── CONFIG ──────────────────────────────────────────────────────
+    const NEWSAPI_KEY       = 'cbd4f7ca02144195901037d9459c5921';
+    const TICKETMASTER_KEY  = 'SF5aRyR3AhGQORYurBOg4JNjkSOykJuw';
+    const SPOTIFY_CLIENT_ID = 'cbaa427358bf44de9a256a892384ff76';
+    const SPOTIFY_SECRET    = 'aec968fc60394f4aa22e23b91213aeb2';
+
+    // ── CITY META ───────────────────────────────────────────────────
+    const CITIES = {
+      london: {
+        name: 'London',
+        meta: 'United Kingdom · Your morning brief',
+        newsQuery: 'London UK',
+        tmCity: 'London',
+        tmCountry: 'GB',
+        spotifyQuery: 'London culture politics',
+        podcasts: [
+          { name: 'The Rest Is Politics', tag: 'Politics', desc: 'Alastair Campbell and Rory Stewart dissect British and global politics. Surprisingly enjoyable.' },
+          { name: 'Monocle 24: The Urbanist', tag: 'City Life', desc: 'Smart takes on cities, architecture, and the way we live. London features heavily.' },
+          { name: 'Football Weekly', tag: 'Sport', desc: 'Because it's London and it's football. The Guardian's finest.' },
+          { name: 'Desert Island Discs', tag: 'Culture', desc: 'A BBC institution. Guests, music, and the one book they'd bring to a desert island.' },
+        ]
+      },
+      lisbon: {
+        name: 'Lisbon',
+        meta: 'Portugal · Your morning brief',
+        newsQuery: 'Lisbon Portugal',
+        tmCity: 'Lisbon',
+        tmCountry: 'PT',
+        spotifyQuery: 'Portugal culture fado',
+        podcasts: [
+          { name: 'Observador Explicado', tag: 'News', desc: 'Portuguese news made digestible. Essential if you're trying to follow the local politics.' },
+          { name: 'Shifter', tag: 'Tech & Society', desc: 'Technology and its effect on society, told from a Portuguese perspective.' },
+          { name: 'É Apenas Negócios', tag: 'Business', desc: 'Portuguese business stories told with personality. Think Freakonomics, but Lisbon.' },
+          { name: 'NIT — New in Town', tag: 'City', desc: 'What's new, what's good, what's worth your time in Lisbon this week.' },
+        ]
+      },
+      brussels: {
+        name: 'Brussels',
+        meta: 'Belgium · Your morning brief',
+        newsQuery: 'Brussels Belgium EU',
+        tmCity: 'Brussels',
+        tmCountry: 'BE',
+        spotifyQuery: 'Brussels Belgium culture',
+        podcasts: [
+          { name: 'The Europe Effect', tag: 'EU Politics', desc: 'What happens in Brussels matters everywhere. This podcast explains why and how.' },
+          { name: 'Euronews Brussels', tag: 'News', desc: 'Daily EU news without the jargon. As close to neutral as Brussels gets.' },
+          { name: 'Belgian Waffle', tag: 'Culture', desc: 'An expat's love letter to Belgium — weird, funny, and surprisingly informative.' },
+          { name: 'Politique Belge', tag: 'Politics', desc: 'Belgian politics explained. Warning: it's complicated. The podcast helps.' },
+        ]
+      }
+    };
+
+    // ── DATE ────────────────────────────────────────────────────────
+    const dateEl = document.getElementById('today-date');
+    dateEl.textContent = new Date().toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    // ── OVERLAY ─────────────────────────────────────────────────────
+    let currentCity = null;
+
+    function openCity(cityKey) {
+      currentCity = cityKey;
+      const city = CITIES[cityKey];
+      const overlay = document.getElementById('city-overlay');
+
+      // Set class + meta
+      overlay.className = `overlay ${cityKey}`;
+      document.getElementById('overlay-city-name').textContent = city.name;
+      document.getElementById('overlay-city-meta').textContent = city.meta;
+
+      // Reset containers
+      document.getElementById('news-count').textContent = 'Loading…';
+      document.getElementById('events-count').textContent = 'Loading…';
+      document.getElementById('news-container').innerHTML = '<div class="loading-row"><div class="spinner"></div> Fetching the headlines…</div>';
+      document.getElementById('events-container').innerHTML = '<div class="loading-row"><div class="spinner"></div> Checking what\'s on…</div>';
+
+      // Show overlay
+      requestAnimationFrame(() => {
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        overlay.scrollTop = 0;
+      });
+
+      // Fetch data
+      fetchNews(city);
+      fetchEvents(city);
+      renderPodcasts(city);
+    }
+
+    function closeCity() {
+      const overlay = document.getElementById('city-overlay');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+      currentCity = null;
+    }
+
+    // Close on Escape
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCity(); });
+
+    // ── NEWS ─────────────────────────────────────────────────────────
+    async function fetchNews(city) {
+      const container = document.getElementById('news-container');
+      const countEl   = document.getElementById('news-count');
+      try {
+        const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(city.newsQuery)}&language=en&sortBy=publishedAt&pageSize=8&apiKey=${NEWSAPI_KEY}`;
+        const res  = await fetch(url);
+        const data = await res.json();
+
+        if (!data.articles || data.articles.length === 0) {
+          container.innerHTML = '<p class="error-msg">No headlines found right now. Check back shortly.</p>';
+          countEl.textContent = '0 stories';
+          return;
+        }
+
+        const articles = data.articles.filter(a => a.title && a.title !== '[Removed]').slice(0, 7);
+        countEl.textContent = `${articles.length} stories`;
+
+        container.innerHTML = `<div class="news-grid">${articles.map((a, i) => `
+          <a class="news-item" href="${a.url}" target="_blank" rel="noopener">
+            <span class="news-index">0${i+1}</span>
+            <div class="news-body">
+              <div class="news-source">${a.source?.name || 'Unknown'}</div>
+              <div class="news-title">${a.title}</div>
+              ${a.description ? `<div class="news-desc">${a.description.substring(0, 120)}…</div>` : ''}
+            </div>
+            <div class="news-time">${timeAgo(a.publishedAt)}</div>
+          </a>`).join('')}
+        </div>`;
+      } catch (err) {
+        container.innerHTML = '<p class="error-msg">Couldn\'t load headlines right now. Our correspondent is probably having a coffee.</p>';
+        countEl.textContent = 'Unavailable';
+      }
+    }
+
+    // ── EVENTS ───────────────────────────────────────────────────────
+    async function fetchEvents(city) {
+      const container = document.getElementById('events-container');
+      const countEl   = document.getElementById('events-count');
+      try {
+        const url = `https://app.ticketmaster.com/discovery/v2/events.json?city=${encodeURIComponent(city.tmCity)}&countryCode=${city.tmCountry}&size=9&sort=date,asc&apikey=${TICKETMASTER_KEY}`;
+        const res  = await fetch(url);
+        const data = await res.json();
+        const events = data._embedded?.events;
+
+        if (!events || events.length === 0) {
+          container.innerHTML = '<p class="error-msg">No upcoming events found. Either the city is quiet or Ticketmaster is having a moment.</p>';
+          countEl.textContent = '0 events';
+          return;
+        }
+
+        countEl.textContent = `${events.length} upcoming`;
+        container.innerHTML = `<div class="events-grid">${events.map(e => {
+          const date = e.dates?.start?.localDate ? formatDate(e.dates.start.localDate) : 'Date TBC';
+          const venue = e._embedded?.venues?.[0]?.name || '';
+          const url   = e.url || '#';
+          return `<a class="event-card" href="${url}" target="_blank" rel="noopener">
+            <div class="event-date">${date}</div>
+            <div class="event-name">${e.name}</div>
+            ${venue ? `<div class="event-venue">${venue}</div>` : ''}
+          </a>`;
+        }).join('')}</div>`;
+      } catch (err) {
+        container.innerHTML = '<p class="error-msg">Couldn\'t load events right now. Try refreshing.</p>';
+        countEl.textContent = 'Unavailable';
+      }
+    }
+
+    // ── PODCASTS (static) ────────────────────────────────────────────
+    function renderPodcasts(city) {
+      const container = document.getElementById('podcasts-container');
+      container.innerHTML = `<div class="podcast-grid">${city.podcasts.map(p => `
+        <div class="podcast-card">
+          <div class="podcast-tag">${p.tag}</div>
+          <div class="podcast-name">${p.name}</div>
+          <div class="podcast-desc">${p.desc}</div>
+        </div>`).join('')}
+      </div>`;
+    }
+
+    // ── HELPERS ──────────────────────────────────────────────────────
+    function timeAgo(dateStr) {
+      const diff = (Date.now() - new Date(dateStr)) / 1000;
+      if (diff < 3600)  return `${Math.floor(diff/60)}m ago`;
+      if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+      return `${Math.floor(diff/86400)}d ago`;
+    }
+
+    function formatDate(str) {
+      return new Date(str).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+  </script>
+</body>
+</html>
