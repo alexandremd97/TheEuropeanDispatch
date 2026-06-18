@@ -163,6 +163,9 @@
       transition: transform 0.18s ease, box-shadow 0.18s ease;
       overflow: hidden;
       -webkit-tap-highlight-color: transparent;
+      text-align: left;
+      width: 100%;
+      font-family: 'Inter', sans-serif;
     }
 
     .city-card::before {
@@ -238,17 +241,16 @@
       position: fixed;
       inset: 0;
       z-index: 100;
-      display: flex;
+      display: none;
       flex-direction: column;
       overflow-y: auto;
       opacity: 0;
-      pointer-events: none;
       transition: opacity 0.4s ease;
     }
 
     .overlay.active {
+      display: flex;
       opacity: 1;
-      pointer-events: all;
     }
 
     .overlay.london  { background: #FDF2F1; }
@@ -657,8 +659,8 @@
         podcasts: [
           { name: 'The Rest Is Politics', tag: 'Politics', desc: 'Alastair Campbell and Rory Stewart dissect British and global politics. Surprisingly enjoyable.' },
           { name: 'Monocle 24: The Urbanist', tag: 'City Life', desc: 'Smart takes on cities, architecture, and the way we live. London features heavily.' },
-          { name: 'Football Weekly', tag: 'Sport', desc: 'Because it's London and it's football. The Guardian's finest.' },
-          { name: 'Desert Island Discs', tag: 'Culture', desc: 'A BBC institution. Guests, music, and the one book they'd bring to a desert island.' },
+          { name: 'Football Weekly', tag: 'Sport', desc: "Because it's London and it's football. The Guardian's finest." },
+          { name: 'Desert Island Discs', tag: 'Culture', desc: "A BBC institution. Guests, music, and the one book they'd bring to a desert island." },
         ]
       },
       lisbon: {
@@ -669,10 +671,10 @@
         tmCountry: 'PT',
         spotifyQuery: 'Portugal culture fado',
         podcasts: [
-          { name: 'Observador Explicado', tag: 'News', desc: 'Portuguese news made digestible. Essential if you're trying to follow the local politics.' },
+          { name: 'Observador Explicado', tag: 'News', desc: "Portuguese news made digestible. Essential if you're trying to follow the local politics." },
           { name: 'Shifter', tag: 'Tech & Society', desc: 'Technology and its effect on society, told from a Portuguese perspective.' },
-          { name: 'É Apenas Negócios', tag: 'Business', desc: 'Portuguese business stories told with personality. Think Freakonomics, but Lisbon.' },
-          { name: 'NIT — New in Town', tag: 'City', desc: 'What's new, what's good, what's worth your time in Lisbon this week.' },
+          { name: 'E Apenas Negocios', tag: 'Business', desc: 'Portuguese business stories told with personality. Think Freakonomics, but Lisbon.' },
+          { name: 'NIT — New in Town', tag: 'City', desc: "What's new, what's good, what's worth your time in Lisbon this week." },
         ]
       },
       brussels: {
@@ -685,8 +687,8 @@
         podcasts: [
           { name: 'The Europe Effect', tag: 'EU Politics', desc: 'What happens in Brussels matters everywhere. This podcast explains why and how.' },
           { name: 'Euronews Brussels', tag: 'News', desc: 'Daily EU news without the jargon. As close to neutral as Brussels gets.' },
-          { name: 'Belgian Waffle', tag: 'Culture', desc: 'An expat's love letter to Belgium — weird, funny, and surprisingly informative.' },
-          { name: 'Politique Belge', tag: 'Politics', desc: 'Belgian politics explained. Warning: it's complicated. The podcast helps.' },
+          { name: 'Belgian Waffle', tag: 'Culture', desc: "An expat's love letter to Belgium — weird, funny, and surprisingly informative." },
+          { name: 'Politique Belge', tag: 'Politics', desc: "Belgian politics explained. Warning: it's complicated. The podcast helps." },
         ]
       }
     };
@@ -704,7 +706,8 @@
       const overlay = document.getElementById('city-overlay');
 
       // Set class + meta
-      overlay.className = `overlay ${cityKey}`;
+      overlay.className = 'overlay';
+      overlay.classList.add(cityKey);
       document.getElementById('overlay-city-name').textContent = city.name;
       document.getElementById('overlay-city-meta').textContent = city.meta;
 
@@ -715,11 +718,9 @@
       document.getElementById('events-container').innerHTML = '<div class="loading-row"><div class="spinner"></div> Checking what\'s on…</div>';
 
       // Show overlay
-      requestAnimationFrame(() => {
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        overlay.scrollTop = 0;
-      });
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      overlay.scrollTop = 0;
 
       // Fetch data
       fetchNews(city);
