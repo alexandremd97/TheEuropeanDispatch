@@ -643,10 +643,7 @@
 
   <script>
     // ── CONFIG ──────────────────────────────────────────────────────
-    const NEWSAPI_KEY       = 'cbd4f7ca02144195901037d9459c5921';
-    const TICKETMASTER_KEY  = 'SF5aRyR3AhGQORYurBOg4JNjkSOykJuw';
-    const SPOTIFY_CLIENT_ID = 'cbaa427358bf44de9a256a892384ff76';
-    const SPOTIFY_SECRET    = 'aec968fc60394f4aa22e23b91213aeb2';
+    // API calls are handled server-side via Netlify functions
 
     // ── CITY META ───────────────────────────────────────────────────
     const CITIES = {
@@ -745,7 +742,7 @@
       const container = document.getElementById('news-container');
       const countEl   = document.getElementById('news-count');
       try {
-        const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(city.newsQuery)}&language=en&sortBy=publishedAt&pageSize=8&apiKey=${NEWSAPI_KEY}`;
+        const url = `/.netlify/functions/api?type=news&q=${encodeURIComponent(city.newsQuery)}`;
         const res  = await fetch(url);
         const data = await res.json();
 
@@ -780,7 +777,7 @@
       const container = document.getElementById('events-container');
       const countEl   = document.getElementById('events-count');
       try {
-        const url = `https://app.ticketmaster.com/discovery/v2/events.json?city=${encodeURIComponent(city.tmCity)}&countryCode=${city.tmCountry}&size=9&sort=date,asc&apikey=${TICKETMASTER_KEY}`;
+        const url = `/.netlify/functions/api?type=events&city=${encodeURIComponent(city.tmCity)}&country=${city.tmCountry}`;
         const res  = await fetch(url);
         const data = await res.json();
         const events = data._embedded?.events;
