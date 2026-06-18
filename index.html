@@ -356,10 +356,146 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* News */
+    /* ── SECTION TABS ── */
+    .section-tabs {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      border-bottom: 1.5px solid var(--ink);
+      margin-bottom: 28px;
+      flex-shrink: 0;
+    }
+    .section-tabs::-webkit-scrollbar { display: none; }
+
+    .section-tab {
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -1.5px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 12px 18px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+      flex-shrink: 0;
+    }
+    .section-tab:hover { color: var(--ink); }
+    .section-tab.active {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+    }
+    .panel-london   .section-tab.active { border-bottom-color: var(--accent-london); color: var(--accent-london); }
+    .panel-lisbon   .section-tab.active { border-bottom-color: var(--accent-lisbon); color: var(--accent-lisbon); }
+    .panel-brussels .section-tab.active { border-bottom-color: var(--accent-brussels); color: var(--accent-brussels); }
+
+    /* ── SECTION CAPTION ── */
+    .section-caption {
+      font-size: 12px;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    /* ── LEAD STORY — Front Page ── */
+    .lead-story {
+      margin-bottom: 32px;
+      padding-bottom: 28px;
+      border-bottom: 2px solid var(--ink);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: opacity 0.15s;
+    }
+    .lead-story:hover { opacity: 0.82; }
+
+    .lead-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .lead-eyebrow::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    .lead-headline {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 14px;
+      letter-spacing: -0.02em;
+    }
+    /* Front page lead — biggest */
+    .lead-story.is-front .lead-headline {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+    }
+    /* Section lead — one step down */
+    .lead-story.is-section .lead-headline {
+      font-size: clamp(1.3rem, 3.5vw, 2rem);
+    }
+
+    .lead-standfirst {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--ink);
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+    .lead-story.is-section .lead-standfirst {
+      font-size: 14px;
+    }
+
+    .lead-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .lead-meta-dot { opacity: 0.4; }
+    .lead-read-more {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .panel-london   .lead-read-more { color: var(--accent-london); }
+    .panel-lisbon   .lead-read-more { color: var(--accent-lisbon); }
+    .panel-brussels .lead-read-more { color: var(--accent-brussels); }
+
+    /* ── SUPPORTING STORIES ── */
+    .supporting-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
     .news-grid { display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
     .news-item {
-      background: var(--paper); padding: 16px;
+      background: var(--paper); padding: 14px 16px;
       display: flex; gap: 14px;
       text-decoration: none; color: inherit;
       transition: background 0.1s; align-items: flex-start;
@@ -368,7 +504,7 @@
     .news-idx { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 22px; padding-top: 2px; }
     .news-body { flex: 1; }
     .news-source { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
-    .news-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; line-height: 1.3; color: var(--ink); margin-bottom: 3px; }
+    .news-title { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; line-height: 1.3; color: var(--ink); margin-bottom: 3px; }
     .news-desc { font-size: 12px; line-height: 1.5; color: var(--muted); }
     .news-time { font-size: 11px; color: var(--muted); white-space: nowrap; padding-top: 2px; }
 
@@ -900,6 +1036,15 @@
     </div>
     <div class="panel-header-rule-bottom"></div>
   </div>
+  <!-- Section tabs — only shown for news -->
+  <div class="section-tabs" id="section-tabs" style="display:none; padding: 0 24px;">
+    <button class="section-tab active" onclick="switchSection('front-page')">Front Page</button>
+    <button class="section-tab" onclick="switchSection('politics')">Politics</button>
+    <button class="section-tab" onclick="switchSection('culture')">Culture</button>
+    <button class="section-tab" onclick="switchSection('business')">Business</button>
+    <button class="section-tab" onclick="switchSection('sport')">Sport</button>
+    <button class="section-tab" onclick="switchSection('happy-news')">Happy News</button>
+  </div>
   <div class="panel-body" id="panel-body">
     <div class="loading-row"><div class="spinner"></div> Loading…</div>
   </div>
@@ -911,10 +1056,67 @@
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
   });
 
-  // City data
+  // ── SECTION CONFIG ────────────────────────────────────────────────
+  const SECTIONS = {
+    'front-page': {
+      label: 'Front Page',
+      caption: 'Everything worth knowing. Curated, not algorithmed.',
+      queries: {
+        london:   'London UK news today',
+        lisbon:   'Lisbon Portugal news today',
+        brussels: 'Brussels Belgium EU news today'
+      }
+    },
+    politics: {
+      label: 'Politics',
+      caption: 'Someone is always arguing about something. Might as well be informed.',
+      queries: {
+        london:   'London UK politics government parliament',
+        lisbon:   'Portugal politics governo Lisboa',
+        brussels: 'Belgium Brussels EU politics European Commission'
+      }
+    },
+    culture: {
+      label: 'Culture',
+      caption: 'Art, film, music, theatre. The stuff that actually matters.',
+      queries: {
+        london:   'London arts culture theatre music exhibition',
+        lisbon:   'Lisbon cultura arte musica festival',
+        brussels: 'Brussels culture arts cinema theatre Belgium'
+      }
+    },
+    business: {
+      label: 'Business',
+      caption: 'Money moving, deals being made. Someone is getting rich.',
+      queries: {
+        london:   'London business economy finance City',
+        lisbon:   'Portugal economy business startups Lisboa',
+        brussels: 'Brussels Belgium business economy EU trade'
+      }
+    },
+    sport: {
+      label: 'Sport',
+      caption: 'Grown adults chasing things. We are all watching.',
+      queries: {
+        london:   'London sport football Premier League',
+        lisbon:   'Portugal sport futebol Benfica Sporting',
+        brussels: 'Belgium sport football Red Devils'
+      }
+    },
+    'happy-news': {
+      label: 'Happy News',
+      caption: 'Yes, good things do happen. We were surprised too.',
+      queries: {
+        london:   'London good news positive uplifting inspiring',
+        lisbon:   'Portugal good news positive community inspiring',
+        brussels: 'Belgium good news positive uplifting community'
+      }
+    }
+  };
+
+  // ── CITY DATA ─────────────────────────────────────────────────────
   const CITIES = {
     london: {
-      newsQuery: 'London UK politics culture',
       tmCity: 'London', tmCountry: 'GB',
       podcasts: [
         { name: 'The Rest Is Politics', tag: 'Politics', desc: "Alastair Campbell and Rory Stewart on British politics. Surprisingly enjoyable." },
@@ -924,7 +1126,6 @@
       ]
     },
     lisbon: {
-      newsQuery: 'Lisbon Portugal news politics',
       tmCity: 'Lisbon', tmCountry: 'PT',
       podcasts: [
         { name: 'Observador Explicado', tag: 'News', desc: "Portuguese news made digestible. Essential for following local politics." },
@@ -934,7 +1135,6 @@
       ]
     },
     brussels: {
-      newsQuery: 'Brussels Belgium EU politics',
       tmCity: 'Brussels', tmCountry: 'BE',
       podcasts: [
         { name: 'The Europe Effect', tag: 'EU Politics', desc: 'What happens in Brussels matters everywhere. This explains why.' },
@@ -945,21 +1145,21 @@
     }
   };
 
-  let currentCity = null;
+  let currentCity    = null;
+  let currentSection = 'front-page';
 
+  // ── NAVIGATION ────────────────────────────────────────────────────
   function enterCity(city) {
     currentCity = city;
     document.getElementById('landing').classList.add('hidden');
-    const screen = document.getElementById('city-' + city);
-    screen.classList.add('active');
+    document.getElementById('city-' + city).classList.add('active');
     document.body.style.overflow = 'hidden';
   }
 
   function exitCity() {
     if (currentCity) {
       document.getElementById('city-' + currentCity).classList.remove('active');
-      const landing = document.getElementById('landing');
-      landing.classList.remove('hidden');
+      document.getElementById('landing').classList.remove('hidden');
       document.body.style.overflow = 'hidden';
       currentCity = null;
     }
@@ -967,19 +1167,29 @@
 
   function openPanel(city, type) {
     currentCity = city;
-    const panel = document.getElementById('content-panel');
-    const body  = document.getElementById('panel-body');
-    const cityNames = { london: 'London', lisbon: 'Lisbon', brussels: 'Brussels' };
+    const panel    = document.getElementById('content-panel');
+    const body     = document.getElementById('panel-body');
+    const tabs     = document.getElementById('section-tabs');
+    const cityLabels = { london: 'London · United Kingdom', lisbon: 'Lisbon · Portugal', brussels: 'Brussels · Belgium' };
     const typeLabels = { news: 'News', events: 'Concerts & Events', podcasts: 'Podcast Picks' };
 
     panel.className = 'content-panel panel-' + city;
-    document.getElementById('panel-city-label').textContent = cityNames[city] + ' · ' + { news: 'United Kingdom', lisbon: 'Portugal', brussels: 'Belgium' }[city] || '';
+    document.getElementById('panel-city-label').textContent = cityLabels[city];
     document.getElementById('panel-title').textContent = typeLabels[type];
     body.innerHTML = '<div class="loading-row"><div class="spinner"></div> Loading…</div>';
 
+    // Show tabs only for news
+    if (type === 'news') {
+      tabs.style.display = 'flex';
+      currentSection = 'front-page';
+      setActiveTab('front-page');
+    } else {
+      tabs.style.display = 'none';
+    }
+
     requestAnimationFrame(() => panel.classList.add('open'));
 
-    if (type === 'news')     fetchNews(city, body);
+    if (type === 'news')     fetchNewsSection(city, 'front-page', body);
     if (type === 'events')   fetchEvents(city, body);
     if (type === 'podcasts') renderPodcasts(city, body);
   }
@@ -988,35 +1198,90 @@
     document.getElementById('content-panel').classList.remove('open');
   }
 
-  async function fetchNews(city, container) {
+  function switchSection(section) {
+    if (section === currentSection) return;
+    currentSection = section;
+    setActiveTab(section);
+    const body = document.getElementById('panel-body');
+    body.innerHTML = '<div class="loading-row"><div class="spinner"></div> Loading…</div>';
+    body.scrollTop = 0;
+    fetchNewsSection(currentCity, section, body);
+  }
+
+  function setActiveTab(section) {
+    document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.section-tab').forEach(t => {
+      if (t.getAttribute('onclick').includes(section)) t.classList.add('active');
+    });
+  }
+
+  // ── FETCH NEWS SECTION ────────────────────────────────────────────
+  async function fetchNewsSection(city, section, container) {
     try {
-      const q = encodeURIComponent(CITIES[city].newsQuery);
-      const res = await fetch(`/.netlify/functions/api?type=news&q=${q}`);
-      const data = await res.json();
+      const query = SECTIONS[section].queries[city];
+      const q     = encodeURIComponent(query);
+      const res   = await fetch(`/.netlify/functions/api?type=news&q=${q}`);
+      const data  = await res.json();
+
       if (!data.articles || !data.articles.length) {
         container.innerHTML = '<p class="error-msg">No headlines right now. Our correspondent is probably having a coffee.</p>';
         return;
       }
-      const articles = data.articles.filter(a => a.title && a.title !== '[Removed]').slice(0, 7);
-      container.innerHTML = `<div class="news-grid">${articles.map((a, i) => `
-        <a class="news-item" href="${a.url}" target="_blank" rel="noopener">
-          <span class="news-idx">0${i+1}</span>
-          <div class="news-body">
-            <div class="news-source">${a.source?.name || 'Unknown'}</div>
-            <div class="news-title">${a.title}</div>
-            ${a.description ? `<div class="news-desc">${a.description.substring(0,120)}…</div>` : ''}
+
+      const articles = data.articles
+        .filter(a => a.title && a.title !== '[Removed]')
+        .slice(0, 8);
+
+      if (!articles.length) {
+        container.innerHTML = '<p class="error-msg">Nothing to report. For once.</p>';
+        return;
+      }
+
+      const isFront   = section === 'front-page';
+      const lead      = articles[0];
+      const supporting = articles.slice(1);
+      const caption   = SECTIONS[section].caption;
+
+      container.innerHTML = `
+        <p class="section-caption">${caption}</p>
+
+        <a class="lead-story ${isFront ? 'is-front' : 'is-section'}"
+           href="${lead.url}" target="_blank" rel="noopener">
+          <div class="lead-eyebrow">${lead.source?.name || 'Breaking'}</div>
+          <div class="lead-headline">${lead.title}</div>
+          ${lead.description ? `<p class="lead-standfirst">${lead.description}</p>` : ''}
+          <div class="lead-meta">
+            ${lead.author ? `<span>${lead.author.split(',')[0]}</span><span class="lead-meta-dot">·</span>` : ''}
+            <span>${timeAgo(lead.publishedAt)}</span>
+            <span class="lead-read-more">Read full story →</span>
           </div>
-          <div class="news-time">${timeAgo(a.publishedAt)}</div>
-        </a>`).join('')}</div>`;
+        </a>
+
+        ${supporting.length ? `
+          <p class="supporting-label">More stories</p>
+          <div class="news-grid">
+            ${supporting.map((a, i) => `
+              <a class="news-item" href="${a.url}" target="_blank" rel="noopener">
+                <span class="news-idx">0${i+2}</span>
+                <div class="news-body">
+                  <div class="news-source">${a.source?.name || 'Unknown'}</div>
+                  <div class="news-title">${a.title}</div>
+                  ${a.description ? `<div class="news-desc">${a.description.substring(0, 110)}…</div>` : ''}
+                </div>
+                <div class="news-time">${timeAgo(a.publishedAt)}</div>
+              </a>`).join('')}
+          </div>` : ''}
+      `;
     } catch(e) {
-      container.innerHTML = '<p class="error-msg">Could not load headlines right now.</p>';
+      container.innerHTML = '<p class="error-msg">Could not load headlines right now. Try again shortly.</p>';
     }
   }
 
+  // ── FETCH EVENTS ──────────────────────────────────────────────────
   async function fetchEvents(city, container) {
     try {
-      const c  = encodeURIComponent(CITIES[city].tmCity);
-      const co = CITIES[city].tmCountry;
+      const c   = encodeURIComponent(CITIES[city].tmCity);
+      const co  = CITIES[city].tmCountry;
       const res = await fetch(`/.netlify/functions/api?type=events&city=${c}&country=${co}`);
       const data = await res.json();
       const events = data._embedded?.events;
@@ -1038,6 +1303,7 @@
     }
   }
 
+  // ── RENDER PODCASTS ───────────────────────────────────────────────
   function renderPodcasts(city, container) {
     container.innerHTML = `<div class="podcast-grid">${CITIES[city].podcasts.map(p => `
       <div class="podcast-card">
@@ -1047,6 +1313,7 @@
       </div>`).join('')}</div>`;
   }
 
+  // ── HELPERS ───────────────────────────────────────────────────────
   function timeAgo(d) {
     const s = (Date.now() - new Date(d)) / 1000;
     if (s < 3600)  return Math.floor(s/60) + 'm ago';
