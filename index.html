@@ -135,19 +135,6 @@
       border-radius: 0;
     }
 
-    /* Hover tint over window */
-    .city-zone::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(26,24,20,0);
-      transition: background 0.2s ease;
-    }
-    .city-zone:hover::before,
-    .city-zone:active::before {
-      background: rgba(26,24,20,0.05);
-    }
-
     /* Nameplate — tiny brass plate style */
     .city-nameplate {
       position: relative;
@@ -156,12 +143,15 @@
       background: rgba(247,244,239,0.95);
       border: 1px solid rgba(26,24,20,0.25);
       padding: 2px 7px 3px;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
       white-space: nowrap;
     }
-    .city-zone:hover .city-nameplate {
-      border-color: rgba(26,24,20,0.6);
-      box-shadow: 1px 1px 0 rgba(26,24,20,0.15);
+    .city-zone:hover .city-nameplate,
+    .city-zone:active .city-nameplate {
+      border-color: rgba(26,24,20,0.7);
+      box-shadow: 1.5px 1.5px 0 rgba(26,24,20,0.2);
+      transform: translateY(-1px);
+      background: rgba(247,244,239,1);
     }
 
     .nameplate-numeral {
@@ -544,14 +534,52 @@
     #city-brussels .event-date, .panel-brussels .event-date { color: var(--accent-brussels); }
 
     /* Podcasts */
-    .podcast-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-    .podcast-card { border: 1.5px solid var(--rule); padding: 16px; background: var(--paper); transition: border-color 0.15s; }
-    .panel-london   .podcast-card:hover { border-color: var(--accent-london); }
-    .panel-lisbon   .podcast-card:hover { border-color: var(--accent-lisbon); }
-    .panel-brussels .podcast-card:hover { border-color: var(--accent-brussels); }
+    .podcast-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    .podcast-card {
+      border: 1.5px solid var(--rule);
+      padding: 0;
+      background: var(--paper);
+      transition: border-color 0.15s, transform 0.15s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .podcast-card:hover { transform: translateY(-2px); }
+    .panel-london    .podcast-card:hover { border-color: var(--accent-london); }
+    .panel-lisbon    .podcast-card:hover { border-color: var(--accent-lisbon); }
+    .panel-brussels  .podcast-card:hover { border-color: var(--accent-brussels); }
+    .panel-madrid    .podcast-card:hover { border-color: #C8392B; }
+    .panel-paris     .podcast-card:hover { border-color: #2255A4; }
+    .panel-amsterdam .podcast-card:hover { border-color: #2E7D4F; }
+
+    .podcast-cover {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--rule);
+      object-fit: cover;
+      display: block;
+    }
+    .podcast-cover-fallback {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      padding: 12px;
+    }
+
+    .podcast-info { padding: 14px 16px 16px; }
     .podcast-tag { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
     .podcast-name { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; line-height: 1.3; color: var(--ink); margin-bottom: 5px; }
-    .podcast-desc { font-size: 12px; line-height: 1.5; color: var(--muted); }
+    .podcast-desc { font-size: 12px; line-height: 1.5; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .podcast-publisher { font-size: 10px; color: var(--muted); margin-top: 6px; font-style: italic; }
 
     /* Loading / error */
     .loading-row { display: flex; align-items: center; gap: 10px; padding: 24px 0; font-size: 13px; color: var(--muted); }
@@ -1157,6 +1185,15 @@
     <button class="section-tab" onclick="switchSection('sport')">Sport</button>
     <button class="section-tab" onclick="switchSection('happy-news')">Happy News</button>
   </div>
+  <!-- Podcast filter tabs — only shown for podcasts -->
+  <div class="section-tabs" id="podcast-tabs" style="display:none; padding: 0 24px;">
+    <button class="section-tab active" onclick="switchPodcastFilter('comedy')">Comedy</button>
+    <button class="section-tab" onclick="switchPodcastFilter('politics')">Politics</button>
+    <button class="section-tab" onclick="switchPodcastFilter('culture')">Culture</button>
+    <button class="section-tab" onclick="switchPodcastFilter('true-crime')">True Crime</button>
+    <button class="section-tab" onclick="switchPodcastFilter('business')">Business</button>
+    <button class="section-tab" onclick="switchPodcastFilter('sport')">Sport</button>
+  </div>
   <div class="panel-body" id="panel-body">
     <div class="loading-row"><div class="spinner"></div> Loading…</div>
   </div>
@@ -1304,6 +1341,21 @@
 
   let currentCity    = null;
   let currentSection = 'front-page';
+  let currentPodcastFilter = 'comedy';
+
+  const CITY_MARKET = {
+    london: 'GB', lisbon: 'PT', brussels: 'BE',
+    madrid: 'ES', paris: 'FR', amsterdam: 'NL'
+  };
+
+  const PODCAST_FILTERS = {
+    comedy:      { label: 'Comedy',     query: 'comedy' },
+    politics:    { label: 'Politics',   query: 'politics news' },
+    culture:     { label: 'Culture',    query: 'culture arts' },
+    'true-crime':{ label: 'True Crime', query: 'true crime' },
+    business:    { label: 'Business',   query: 'business' },
+    sport:       { label: 'Sport',      query: 'sport football' }
+  };
 
   // ── NAVIGATION ────────────────────────────────────────────────────
   function enterCity(city) {
@@ -1326,8 +1378,12 @@
     currentCity = city;
     const panel    = document.getElementById('content-panel');
     const body     = document.getElementById('panel-body');
-    const tabs     = document.getElementById('section-tabs');
-    const cityLabels = { london: 'London · United Kingdom', lisbon: 'Lisbon · Portugal', brussels: 'Brussels · Belgium' };
+    const newsTabs = document.getElementById('section-tabs');
+    const podTabs  = document.getElementById('podcast-tabs');
+    const cityLabels = {
+      london: 'London · United Kingdom', lisbon: 'Lisbon · Portugal', brussels: 'Brussels · Belgium',
+      madrid: 'Madrid · Spain', paris: 'Paris · France', amsterdam: 'Amsterdam · Netherlands'
+    };
     const typeLabels = { news: 'News', events: 'Concerts & Events', podcasts: 'Podcast Picks' };
 
     panel.className = 'content-panel panel-' + city;
@@ -1335,20 +1391,26 @@
     document.getElementById('panel-title').textContent = typeLabels[type];
     body.innerHTML = '<div class="loading-row"><div class="spinner"></div> Loading…</div>';
 
-    // Show tabs only for news
+    // Show the right tab row for the content type
+    newsTabs.style.display = 'none';
+    podTabs.style.display  = 'none';
+
     if (type === 'news') {
-      tabs.style.display = 'flex';
+      newsTabs.style.display = 'flex';
       currentSection = 'front-page';
-      setActiveTab('front-page');
-    } else {
-      tabs.style.display = 'none';
+      setActiveTab(newsTabs, 'front-page');
+    }
+    if (type === 'podcasts') {
+      podTabs.style.display = 'flex';
+      currentPodcastFilter = 'comedy';
+      setActiveTab(podTabs, 'comedy');
     }
 
     requestAnimationFrame(() => panel.classList.add('open'));
 
     if (type === 'news')     fetchNewsSection(city, 'front-page', body);
     if (type === 'events')   fetchEvents(city, body);
-    if (type === 'podcasts') renderPodcasts(city, body);
+    if (type === 'podcasts') fetchPodcasts(city, 'comedy', body);
   }
 
   function closePanel() {
@@ -1358,17 +1420,26 @@
   function switchSection(section) {
     if (section === currentSection) return;
     currentSection = section;
-    setActiveTab(section);
+    setActiveTab(document.getElementById('section-tabs'), section);
     const body = document.getElementById('panel-body');
     body.innerHTML = '<div class="loading-row"><div class="spinner"></div> Loading…</div>';
     body.scrollTop = 0;
     fetchNewsSection(currentCity, section, body);
   }
 
-  function setActiveTab(section) {
-    document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.section-tab').forEach(t => {
-      if (t.getAttribute('onclick').includes(section)) t.classList.add('active');
+  function switchPodcastFilter(filter) {
+    if (filter === currentPodcastFilter) return;
+    currentPodcastFilter = filter;
+    setActiveTab(document.getElementById('podcast-tabs'), filter);
+    const body = document.getElementById('panel-body');
+    body.innerHTML = '<div class="loading-row"><div class="spinner"></div> Searching Spotify…</div>';
+    body.scrollTop = 0;
+    fetchPodcasts(currentCity, filter, body);
+  }
+
+  function setActiveTab(tabRow, value) {
+    tabRow.querySelectorAll('.section-tab').forEach(t => {
+      t.classList.toggle('active', t.getAttribute('onclick').includes(`'${value}'`));
     });
   }
 
@@ -1460,14 +1531,54 @@
     }
   }
 
-  // ── RENDER PODCASTS ───────────────────────────────────────────────
-  function renderPodcasts(city, container) {
-    container.innerHTML = `<div class="podcast-grid">${CITIES[city].podcasts.map(p => `
-      <div class="podcast-card">
-        <div class="podcast-tag">${p.tag}</div>
-        <div class="podcast-name">${p.name}</div>
-        <div class="podcast-desc">${p.desc}</div>
-      </div>`).join('')}</div>`;
+  // ── FETCH PODCASTS (live Spotify search) ──────────────────────────
+  async function fetchPodcasts(city, filter, container) {
+    try {
+      const cityNames = {
+        london: 'London', lisbon: 'Lisbon', brussels: 'Brussels',
+        madrid: 'Madrid', paris: 'Paris', amsterdam: 'Amsterdam'
+      };
+      const market   = CITY_MARKET[city] || 'GB';
+      const baseQuery = PODCAST_FILTERS[filter].query;
+      // Blend the city in for some local relevance, but keep the genre as the main driver
+      const query = `${baseQuery} ${cityNames[city]}`;
+      const q = encodeURIComponent(query);
+
+      const res  = await fetch(`/.netlify/functions/api?type=podcasts&q=${q}&market=${market}`);
+      const data = await res.json();
+
+      const shows = data.shows?.items?.filter(s => s && s.name) || [];
+
+      if (!shows.length) {
+        container.innerHTML = `<p class="error-msg">Nothing found for ${PODCAST_FILTERS[filter].label.toLowerCase()} right now. Spotify's search can be moody. Try another category.</p>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <p class="section-caption">Live from Spotify — ${PODCAST_FILTERS[filter].label.toLowerCase()} picks, freshly searched.</p>
+        <div class="podcast-grid">
+          ${shows.slice(0, 9).map(s => {
+            const cover = s.images?.[0]?.url;
+            const url   = s.external_urls?.spotify || '#';
+            const desc  = (s.description || '').replace(/<[^>]*>/g, '');
+            return `
+            <a class="podcast-card" href="${url}" target="_blank" rel="noopener">
+              ${cover
+                ? `<img class="podcast-cover" src="${cover}" alt="${s.name}" loading="lazy">`
+                : `<div class="podcast-cover-fallback">${s.name}</div>`}
+              <div class="podcast-info">
+                <div class="podcast-tag">${PODCAST_FILTERS[filter].label}</div>
+                <div class="podcast-name">${s.name}</div>
+                ${desc ? `<div class="podcast-desc">${desc.substring(0, 110)}…</div>` : ''}
+                <div class="podcast-publisher">${s.publisher || ''}</div>
+              </div>
+            </a>`;
+          }).join('')}
+        </div>
+      `;
+    } catch (e) {
+      container.innerHTML = '<p class="error-msg">Could not reach Spotify right now. Try again shortly.</p>';
+    }
   }
 
   // ── HELPERS ───────────────────────────────────────────────────────
